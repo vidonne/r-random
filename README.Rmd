@@ -1,0 +1,19 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# r-random
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Just a place to put all my R exploration online.
