@@ -1,0 +1,64 @@
+---
+title: "Main presentation title"
+subtitle: "Subtitle if needed"
+author: "Your name"
+institute: "Bureau/Divisions"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+output: unhcrdown::html_slides
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+## Normal
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             format = "html",
+             caption = "Population of concern to UNHCR for the last 5 years")
+```
+
+---
+
+## Grey striped
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-grey\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+---
+
+## Blue striped
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-blue\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+---
+
+## Narrow
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-narrow\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+---
+
+## No border
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-noborder\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```

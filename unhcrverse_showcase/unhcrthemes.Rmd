@@ -1,0 +1,107 @@
+---
+title: "unhcrthemes"
+author: "Cedric Vidonne"
+date: "11/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE)
+library(unhcrthemes)
+library(ggplot2)
+library(ragg)
+library(unhcrdatapackage)
+library(dplyr)
+```
+
+Replication of UNHCR Data Visualization Guideline recommendation for R.
+
+### UNHCR Plot Theme
+
+Simple theme with sensible default to mirror UNHCR recommendations.
+
+```{r base_theme}
+ggplot(datasets::iris, aes(x = Petal.Length, y = Petal.Width)) +
+  geom_point() +
+  labs(x = "Petal length", y="Petal width",
+      title = "Iris data ggplot2 scatterplot example",
+      subtitle = "Just a simple plot to show the basic style of theme_unhcr",
+      caption = "Data from datasets::iris") +
+  theme_unhcr()
+
+```
+
+### UNHCR Colours
+
+Replication of UNHCR colour palettes.
+
+```{r colours}
+display_unhcr_all()
+```
+
+### UNHCR Theme + Colours
+
+Merging the theme and colours.
+
+```{r simple}
+ggplot(datasets::iris, aes(x = Petal.Length, y = Petal.Width)) +
+  geom_point(aes(color = Species)) +
+  scale_color_unhcr_d(palette = "pal_unhcr") +
+  labs(x = "Petal length", y="Petal width",
+      title = "Iris data ggplot2 scatterplot example",
+      subtitle = "Just a simple plot to show the basic style of theme_unhcr",
+      caption = "Data from datasets::iris") +
+  theme_unhcr()
+
+```
+
+### Some UNHCR example using `unhcrdatapackage`
+
+Use of another UNHCR R package to call end of the year statistics to create some charts with the UNHCR theme and colour palettes.
+
+```{r call_data}
+poc_2010_2020 <- end_year_population_totals_long %>% 
+  filter(Year >= 2010)
+knitr::kable(head(poc_2010_2020, c(10,5)))
+```
+
+
+```{r simple_bar}
+total_displaced_2010_2020 <- poc_2010_2020 %>% 
+  group_by(Year) %>% 
+  summarise(total_disp = sum(Value))
+
+ggplot(total_displaced_2010_2020, aes(x = Year, y = total_disp)) +
+  geom_col(fill = unhcr_pal(1, "pal_blue")) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, NULL)),
+                     labels = scales::label_number_si()) +
+  labs(x = NULL, y=NULL,
+      title = "Total people displaced | 2010-2020",
+      subtitle = "Number of people in millions",
+      caption = "Source: UNHCR Data Finder") +
+  theme_unhcr(grid = "Y")
+
+```
+
+
+```{r lines}
+ref_idp <- poc_2010_2020 %>% 
+  filter(Population.type == "REF" | Population.type == "IDP") %>% 
+  group_by(Year, Population.type) %>% 
+  summarise(Value = sum(Value))
+
+ggplot(ref_idp, aes(x = Year, y = Value,
+                    color = Population.type)) +
+  geom_line(size = 1) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::label_number_si()) +
+  scale_colour_unhcr_d(nmax = 4, order = c(2,4), labels = c("Refugees", "IDPs")) +
+  labs(x = NULL, y="Number of people in millions",
+      title = "Number of refugees and IDPs of concern to UNHCR | 2010-2020",
+      caption = "Source: UNHCR Data Finder") +
+  theme_unhcr(grid = "Y")
+```
+

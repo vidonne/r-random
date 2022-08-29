@@ -1,0 +1,124 @@
+---
+title: "Main title"
+subtitle: "Sub title"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+author:
+  - name: Contact Name
+    affiliation: Job title
+    email: email@unhcr.org
+output:
+  unhcrdown::paged_simple:
+    back_html: true
+paged-footnotes: true
+links-to-footnotes: true
+# uncomment this line to produce HTML and PDF in RStudio:
+#knit: pagedown::chrome_print
+---
+
+```{css, echo=FALSE}
+.col-ruler {
+  column-rule: 2px solid #0072bc;
+  column-gap: 30px;
+}
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      comment = "#>",
+                      message=FALSE, 
+                      warning=FALSE,
+                      fig.width = 6.3,
+                      fig.height = 4.4,
+                      fig.retina = 2,
+                      fig.align = "center",
+                      fig.showtext = TRUE,
+                      dev = "ragg_png",
+                      dpi = 300)
+```
+
+**Column approach**
+
+## Key figures
+
+:::{.col2 .col-ruler}
+
+<i class="fa-solid fa-person-walking-dashed-line-arrow-right blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Refugees
+
+<i class="fa-solid fa-hands-holding-circle blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Asylum-seekers
+
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Venezuelans displaced abroad
+
+<i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Internally displaced people
+
+:::
+
+<br>
+
+
+```{r main_plot}
+# Loading required packages
+library(unhcrthemes)
+library(tidyverse)
+library(scales)
+
+# Loading data
+df <- read_csv("https://raw.githubusercontent.com/GDS-ODSSS/unhcr-dataviz-platform/master/data/comparison/column_stacked.csv")
+
+# Plot
+plot <- ggplot(df) +
+  geom_col(aes(x = year,
+               y = rst_in_thousand,
+               fill = rst_type),
+           width = 0.7) +
+  geom_text(aes(x = year,
+                y = rst_in_thousand,
+                color = rst_type,
+                label = rst_in_thousand),
+            position = position_stack(vjust = 0.5),
+            show.legend = FALSE,
+            size = 8/.pt) +
+  scale_color_manual(values = c("#000000", "#FFFFFF")) +
+  scale_fill_unhcr_d(palette = "pal_unhcr",
+                     nmax = 2,
+                     order = 2:1) +
+  scale_x_continuous(breaks = pretty_breaks(n = 11)) +
+  scale_y_continuous(expand = expansion(c(0, 0.1))) +
+  labs(title = "Resettlement by UNHCR and others | 2010-2020",
+       subtitle = "Number of people (thousand)",
+       caption = "Source: data source here\n© UNHCR, The UN Refugee Agency") +
+  theme_unhcr(grid = FALSE,
+              axis = "x",
+              axis_title = FALSE,
+              axis_text = "x")
+plot
+```
+
+\newpage
+
+**Float approach**
+
+## Key figures
+
+:::{.clearfix}
+
+:::{.float-start}
+<i class="fa-solid fa-person-walking-dashed-line-arrow-right blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Refugees
+
+<i class="fa-solid fa-hands-holding-circle blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Asylum-seekers
+:::
+
+:::{.float-end}
+<i class="fa-solid fa-person-rays blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Venezuelans displaced abroad
+
+<i class="fa-solid fa-person-walking-arrow-right blue" style="font-size: 2em;"></i><br>**[XXX,XXX]{.blue .lead}** Internally displaced people
+:::
+
+:::
+
+<br>
+
+
+```{r plot2}
+plot
+```

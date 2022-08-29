@@ -1,0 +1,86 @@
+---
+title: "First line title"
+subtitle: "Second line title"
+abstract-title: Introduction title
+abstract: "Introduction text on top of cover picture - NOT MANDATORY"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+author:
+  - name: Contact Name
+    affiliation: Job title
+    email: email@unhcr.org
+output:
+  unhcrdown::paged_report:
+    # put the path to your cover image
+    front_img:
+    img_to_dark: false
+# Set  toc title, default none
+toc-title: Contents
+# Change to true to include list of tables
+lot: false
+# Set lot title, default: "List of Tables"
+lot-title: "Tables"
+# Change to true to include list of figures
+lof: false
+# Set lof title, default: "List of Figures"
+lof-title: "Figures"
+# If you include any <abbr> a list of abbreviations will be built.
+# Set lof title, default: "List of Abbreviations"
+loa-title: "Acronyms"
+paged-footnotes: true
+links-to-footnotes: true
+# uncomment this line to produce HTML and PDF in RStudio:
+#knit: pagedown::chrome_print
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Normal
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             format = "html",
+             caption = "Population of concern to UNHCR for the last 5 years")
+```
+
+## Grey striped
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-grey\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+\newpage
+
+## Blue striped
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-blue\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+
+## Narrow
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-narrow\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```
+
+\newpage
+
+## No border
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(iris, 8),
+             table.attr = "class=\'table-noborder\'",
+             format = "html",
+             caption = "Population of concern to UNHCR")
+```

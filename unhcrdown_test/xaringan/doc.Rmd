@@ -1,0 +1,271 @@
+---
+title: "Main presentation title"
+subtitle: "Subtitle if needed"
+author: "Your name"
+institute: "Bureau/Divisions"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+output:
+  unhcrdown::html_slides:
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+library(fontawesome)
+```
+
+# Top-Left
+
+
+---
+class: center
+
+# Top-center
+
+---
+class: center, right
+
+# Top-right
+
+---
+class: middle
+
+# Middle-left
+
+---
+class: middle, center
+
+# Middle-center
+
+.left[This text will appear on the **left side** of the slide]
+
+---
+class: middle, right
+
+# Middle-right
+
+---
+class: bottom
+
+# Bottom-left
+
+---
+class: bottom, center
+
+# Bottom-center
+
+---
+class: bottom, right
+
+# Bottom-right
+
+---
+class: inverse
+
+# Blue background
+
+---
+# UNHCR Helpers
+
+You can change the **size** of the text by using the `.large[]` or `.small[]` class
+
+.large[Large text] followed by .small[small text] example
+
+You can change the **colour** of the text by using the `.blue[]` or `.grey[]` class
+
+.blue[Blue text] followed by .grey[grey text] example
+
+You can change the **background** of the text by using the `.bg-blue[]` or `.bg-grey[]` class
+
+.bg-blue[All this text will be in a blue background]
+
+`r fa("hands-holding-circle", fill = "var(--unhcr-blue)")`
+
+---
+class: hide-logo
+background-image: url(https://raw.githubusercontent.com/vidonne/unhcrdown/master/inst/resources/img/cover-example.jpg)
+background-size: cover
+background-position: center 25%
+
+
+---
+# Columns within columns
+
+
+.pull-left[
+.pull-left[
+### Col 1.1
+This is a `.pull-left[]` within a `.pull-left[]`
+]
+.pull-right[
+### Col 1.2
+This is a `.pull-right[]` within a `.pull-left[]`
+]
+]
+
+.pull-right[
+.pull-left[
+### Col 2.1
+This is a `.pull-left[]` within a `.pull-right[]`
+]
+.pull-right[
+### Col 2.2
+This is a `.pull-right[]` within a `.pull-right[]`
+]
+]
+
+---
+# Highlighting code
+
+.pull-left[
+````
+```{r}`r ''`
+library(unhcrdatapackage)
+library(tidyverse)
+aus_displ <- end_year_population_totals_long %>%
+  filter(Year == 2021) %>%
+  filter(CountryAsylumName == "Australia") %>%
+  select(CountryOriginName, CountryAsylumName, Population.type, Value)
+glimpse(aus_displ) #<<
+```
+````
+]
+
+.pull-right[
+```{r, eval = FALSE}
+library(unhcrdatapackage)
+library(tidyverse)
+aus_displ <- end_year_population_totals_long %>%
+  filter(Year == 2021) %>%
+  filter(CountryAsylumName == "Australia") %>%
+  select(CountryOriginName, CountryAsylumName, Population.type, Value)
+glimpse(aus_displ) #<<
+```
+]
+
+---
+# Highlighting code output
+
+.pull-left[
+````
+```{r, highlight.output = c(3, 5)}`r ''`
+library(unhcrdatapackage)
+library(tidyverse)
+aus_displ <- end_year_population_totals_long %>%
+  filter(Year == 2021) %>%
+  filter(CountryAsylumName == "Australia") %>%
+  select(CountryOriginName, CountryAsylumName, Population.type, Value)
+glimpse(aus_displ)
+```
+````
+]
+
+.pull-right[
+```{r, highlight.output = c(3, 5), echo=FALSE}
+library(unhcrdatapackage)
+library(tidyverse)
+aus_displ <- end_year_population_totals_long %>%
+  filter(Year == 2021) %>%
+  filter(CountryAsylumName == "Australia") %>%
+  select(CountryOriginName, CountryAsylumName, Population.type, Value)
+glimpse(aus_displ)
+```
+]
+
+---
+# Table with kable
+
+
+```{r, echo=FALSE}
+head(aus_displ) |> 
+  knitr::kable(format = "html",
+               col.names = c("Country of origin", "Country of asylum", "Population type", "Number of people"),
+               caption = "Displaced population in Australia | 2021")
+```
+
+---
+# Table classes
+
+
+```{r, echo=FALSE}
+head(aus_displ) |> 
+  knitr::kable(format = "html",
+               col.names = c("Country of origin", "Country of asylum", "Population type", "Number of people"),
+               caption = "Displaced population in Australia | 2021",
+               table.attr = "class=\"table  table-blue table-narrow table-noborder\"")
+```
+
+---
+# Plots
+
+.center[
+
+```{r, echo=FALSE, dev = "ragg_png", fig.showtext = TRUE, fig.retina = 4, out.width="60%", fig.height=5}
+library(tidyverse)
+library(scales)
+library(unhcrthemes)
+
+idp_total_sex <- idp |>
+  group_by(year, sex) |>
+  summarise(idp = sum(idp, na.rm = TRUE) / 1e6) |>
+  ungroup()
+
+ggplot(idp_total_sex) +
+  geom_col(aes(x = year, y = idp, fill = sex),
+           width = 0.8,
+           position = position_dodge(width = 0.9)) +
+  scale_fill_unhcr_d(palette = "pal_unhcr") +
+  scale_y_continuous(expand = expansion(c(0, 0.1))) +
+  labs(title = "Globalement IDP displacement | 2010 - 2020",
+       y = "Number of people (in million)",
+       caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+  scale_x_continuous(breaks = pretty_breaks(10)) +
+  theme_unhcr(grid = "Y", axis_title = "y")
+```
+
+]
+
+---
+# Code and plot
+
+.pull-left[
+
+```{r global-idp,  fig.show='hide'}
+library(tidyverse)
+library(scales)
+library(unhcrthemes)
+
+idp_total_sex <- idp |>
+  group_by(year, sex) |>
+  summarise(idp = sum(idp, na.rm = TRUE) / 1e6) |>
+  ungroup()
+
+ggplot(idp_total_sex) +
+  geom_col(aes(x = year, y = idp, fill = sex),
+           width = 0.8,
+           position = position_dodge(width = 0.9)) +
+  scale_fill_unhcr_d(palette = "pal_unhcr") +
+  scale_y_continuous(expand = expansion(c(0, 0.1))) +
+  labs(title = "Globalement IDP displacement | 2010 - 2020",
+       y = "Number of people (in million)",
+       caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+  scale_x_continuous(breaks = pretty_breaks(10)) +
+  theme_unhcr(grid = "Y", axis_title = "y")
+```
+
+]
+
+.pull-right[
+```{r, ref.label="global-idp", echo=FALSE, dev = "ragg_png", fig.showtext = TRUE, fig.retina = 4, out.width="100%", fig.height=5}
+
+```
+]

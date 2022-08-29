@@ -1,0 +1,96 @@
+---
+title: "rmd-js-test"
+author: "Cedric Vidonne"
+date: "5/3/2021"
+always_allow_html: yes
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style type="text/css">
+@import url("https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css");
+</style>
+
+<style>
+body { margin: 0; padding: 0; }
+#map { width: 100%; height: 500px }
+</style>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+## Mapbox map with js in Rmd code chunk
+
+<div id="map"></div>
+
+```{js, echo=FALSE, class.source = "jsvis1"}
+// javascript code goes here
+
+mapboxgl.accessToken = 'pk.eyJ1IjoidW5oY3IiLCJhIjoiOUQzQ2dnbyJ9.6ghfFmvxpu7HvHzXci_ogw';
+var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/streets-v11', // style URL
+center: [-74.5, 40], // starting position [lng, lat]
+zoom: 9 // starting zoom
+});
+
+```
+
+## D3 viz with js in Rmd code chunk
+
+<div id="scatter_area"></div>
+
+```{js, echo=FALSE, class.source = "jsvis1"}
+// javascript code goes here
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 40, bottom: 30, left: 30},
+    width = 450 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svG = d3.select("#scatter_area")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Create data
+var data = [ {x:10, y:20}, {x:40, y:90}, {x:80, y:50} ]
+
+// X scale and Axis
+var x = d3.scaleLinear()
+    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .range([0, width]);       // This is the corresponding value I want in Pixel
+svG
+  .append('g')
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x));
+
+// X scale and Axis
+var y = d3.scaleLinear()
+    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .range([height, 0]);       // This is the corresponding value I want in Pixel
+svG
+  .append('g')
+  .call(d3.axisLeft(y));
+
+// Add 3 dots for 0, 50 and 100%
+svG
+  .selectAll("whatever")
+  .data(data)
+  .enter()
+  .append("circle")
+    .attr("cx", function(d){ return x(d.x) })
+    .attr("cy", function(d){ return y(d.y) })
+    .attr("r", 7)
+
+```
+
+

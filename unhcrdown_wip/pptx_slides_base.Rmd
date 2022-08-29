@@ -1,0 +1,68 @@
+---
+author: "Your Name"
+title: "Untitled"
+subtitle: "Sub-title"
+institute: "Test abstract"
+output: 
+  officedown::rpptx_document:
+    reference_doc: templates/pptx_template.pptx
+    slide_level: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+library(officedown)
+library(ggplot2)
+library(rvg)
+```
+
+# In the morning
+
+Test text
+
+---
+
+## Table
+
+```{r table}
+knitr::kable(mtcars[1:5, 1:5], caption = "An example table")
+```
+
+--- 
+
+## Breakfast
+
+- Eat eggs
+- Drink coffee
+
+---
+
+### Dinner
+
+- Eat spaghetti
+- Drink wine
+
+---
+
+##### Dinner
+
+- Eat spaghetti
+- Drink wine
+
+---
+
+###### Dinner
+
+- Eat spaghetti
+- Drink wine
+
+---
+
+```{r, cars, fig.cap="A scatterplot.", echo=FALSE}
+plot(cars)
+```
+
+## Going to sleep
+
+- Get in bed
+- Count sheep

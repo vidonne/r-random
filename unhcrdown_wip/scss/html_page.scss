@@ -1,0 +1,43 @@
+.lead {
+  color: $secondary;
+}
+
+blockquote {
+  margin-bottom: 1rem;
+  quotes: "“" "”" "‘" "’";
+  border-left: none;
+}
+
+blockquote>:first-child {
+  font-size: 1.2rem;
+  font-style: italic;
+  margin-bottom: 0;
+  color: $primary;
+  quotes: "“" "”" "‘" "’";
+}
+
+blockquote>:first-child::before {
+  content: open-quote;
+}
+
+blockquote>:first-child::after {
+  content: close-quote;
+}
+
+blockquote>:last-child {
+  font-weight: 700;
+}
+
+blockquote>:last-child::before {
+  content: "— ";
+}
+
+blockquote>:only-child {
+  font-weight: 400;
+  text-align: start;
+}
+
+li::marker {
+    color: $primary;
+  }
+  

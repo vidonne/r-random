@@ -1,0 +1,138 @@
+---
+date: "`r Sys.Date()`"
+author: "Your Name"
+title: "Untitled"
+output: 
+  officedown::rpptx_document:
+    reference_doc: templates/pptx_template.pptx
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.cap = TRUE)
+library(officedown)
+library(ggplot2)
+library(rvg)
+```
+
+## Test
+
+:::::: {.columns}
+::: {.column}
+Content of the left column.
+:::
+
+::: {.column}
+Content of the right column.
+:::
+::::::
+
+
+## Table
+
+```{r layout='Two Content', ph=officer::ph_location_left()}
+head(cars)
+```
+
+```{r layout='Two Content', ph=officer::ph_location_right()}
+head(iris)
+```
+
+
+## Slide with ggplot
+
+```{r layout='Title and Content', ph=officer::ph_location_type(type="body")}
+mygg <- ggplot(pressure, aes(x = temperature, y = pressure)) +
+  geom_point()
+dml(ggobj = mygg)
+```
+
+## Slide with ggplot
+
+```{r ph=officer::ph_location_fullsize()}
+mygg <- ggplot(pressure, aes(x = temperature, y = pressure)) +
+  geom_point()
+dml(ggobj = mygg)
+``` 
+
+## ggplot in left column
+
+```{r ph=officer::ph_location_left()}
+mygg <- ggplot(pressure, aes(x = temperature, y = pressure)) +
+  geom_point()
+dml(ggobj = mygg)
+``` 
+
+## ggplot in right column
+
+
+- Some
+- Bullets
+
+```{r ph=officer::ph_location_right()}
+mygg <- ggplot(pressure, aes(x = temperature, y = pressure)) +
+  geom_point()
+dml(ggobj = mygg)
+``` 
+
+## ggplot in both columns
+
+
+```{r ph=officer::ph_location_left()}
+dml(ggobj = mygg)
+``` 
+
+```{r ph=officer::ph_location_right()}
+dml(ggobj = mygg)
+``` 
+
+
+## custom plot locations
+
+
+```{r ph=officer::ph_location(width = 2, height = 2, left = 2, top = 2)}
+dml(plot(pressure))
+```
+
+```{r ph=officer::ph_location(width = 3, height = 3, left = 4, top = 4)}
+dml(plot(pressure))
+```
+
+# Section header
+
+---
+
+
+
+## Section header (Slide 3)
+
+
+---
+
+### Slide Title (Slide 4)
+
+
+```{r table}
+knitr::kable(mtcars[1:5, 1:5], caption = "An example table")
+```
+
+---
+
+#### Slide content header (Slide 4)
+
+---
+
+##### Slide content header (Slide 4)
+
+---
+
+### Slide Title (Slide 4)
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+
+
+
+
+

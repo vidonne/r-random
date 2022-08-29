@@ -1,0 +1,44 @@
+---
+title: "Untitled"
+author: "Cedric Vidonne"
+date: "11/26/2021"
+output: powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Long text
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ultrices sollicitudin magna, nec commodo mauris. Sed semper malesuada maximus. Pellentesque et est velit. Nam nec tortor ex. Aliquam sodales arcu vel malesuada semper. Vestibulum enim tortor, commodo vel sem accumsan, pretium accumsan ex. Aenean varius ligula et nisi rutrum, ut vulputate elit dapibus. Mauris eu purus pharetra, aliquam felis sed, vestibulum quam. Duis gravida dictum mi eu tempus. Quisque lacinia mi quam, nec pharetra velit vulputate sed. Quisque eget felis tortor. In hac habitasse platea dictumst. Nunc vel sem magna. Cras tellus arcu, vestibulum eu egestas eget, accumsan sed quam. Cras tempor porttitor lorem, faucibus imperdiet diam malesuada eu.
+
+Nam dui libero, feugiat a laoreet non, dictum ac lectus. Morbi ornare ipsum nec augue molestie pellentesque. Fusce eu erat accumsan, pulvinar mauris sed, facilisis felis. Pellentesque ullamcorper dignissim augue ut volutpat. Nunc mollis vestibulum neque eu fermentum. Duis congue ornare leo at euismod. Donec a ipsum sit amet turpis elementum blandit. Sed dapibus feugiat nisi, eget cursus odio mattis non. Cras viverra tellus non vulputate hendrerit. Sed egestas tincidunt lectus sit amet convallis. Cras neque diam, luctus dictum pellentesque quis, facilisis et lorem. Nulla nec dolor eget ante sollicitudin sodales faucibus sed nulla. Vivamus condimentum mi a nisl scelerisque, sit amet pharetra metus iaculis.
+
+Curabitur elementum vitae ligula eget viverra. Aliquam lorem ipsum, eleifend et odio eu, facilisis bibendum urna. Integer eu viverra nisl. Pellentesque in velit a massa suscipit sodales. Praesent imperdiet nisl eros, et fermentum nunc efficitur tincidunt. Pellentesque ac orci id odio dictum porta in a magna. Nulla semper facilisis elit sit amet commodo. Aliquam aliquam ipsum justo, id finibus risus varius vitae. Cras eu odio in nibh sollicitudin lobortis maximus sit amet velit. Sed venenatis dolor vel malesuada euismod. In hac habitasse platea dictumst. Duis sagittis, lectus eu lobortis congue, quam lacus cursus augue, quis scelerisque nisi enim eget lacus. In molestie ante risus, sed ultricies felis bibendum vel. Nunc gravida pulvinar mollis. Nunc ut nulla mauris.
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+

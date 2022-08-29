@@ -1,0 +1,259 @@
+---
+title: "First line title"
+subtitle: "Second line"
+abstract-title: Introduction title
+abstract: "Introduction text on top of cover picture - NOT MANDATORY"
+date: "`r format(Sys.Date(),  '%d %B %Y')`"
+author:
+  - name: Contact Name
+    affiliation: Job title
+    email: email@unhcr.org
+output:
+  pagedown::html_paged:
+    css: ["css/reset.css", "css/color_variables.css", "css/fonts.css", "css/paged_base.css",  "css/paged_table.css","css/paged_report.css"]
+    front_cover: img/cover-example.jpg
+    includes:
+      after_body: html/back_paged_report.html
+    toc: true
+    toc_depth: 2
+    number_sections: false
+    # change to true for a self-contained document, but it'll be a litte slower for Pandoc to render
+    self_contained: false
+# Set  toc title, default none
+toc-title: Contents
+# Change to false to remove list of tables
+lot: false
+# Set lot title, default: "List of Tables"
+lot-title: "Tables"
+# Change to false to remove list of figures
+lof: false
+# Set lof title, default: "List of Figures"
+lof-title: "Figures"
+# If you include any <abbr> a list of abbreviations will be built.
+# Set lof title, default: "List of Abbreviations"
+loa-title: "Acronyms"
+paged-footnotes: true
+links-to-footnotes: true
+# uncomment this line to produce HTML and PDF in RStudio:
+#knit: pagedown::chrome_print
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# h1 Heading
+## h2 Heading
+### h3 Heading
+#### h4 Heading
+##### h5 Heading
+###### h6 Heading
+
+This file is what a user will see when [they select your template](https://github.com/rstudio/pagedown/blob/main/inst/resources/css/default.css). Make sure that you update the fields in the yaml header. [In particular](#second-level-1) you will want to update the `output` field to whatever format your template requires.
+
+*This line rendered as italicized text.*
+
+**This line rendered as bold text.**
+
+***This line rendered as italicized and bold text.***
+
+~~This line of text will be strikethrough.~~
+
+You can use the `<u>` tag to <u>underline text</u>.
+
+You can use the `<mark>` tag to <mark>highlight text</mark>.
+
+This `^text or number^` rendered as ^superscript^.
+
+::: {.lead}
+Example of a paragraph with the `.lead` class applied
+:::
+
+or `<big>` tag. <big>Big tag example</big>
+
+```{r inline-text, include=TRUE, eval=FALSE}
+*This line rendered as italicized text.*
+**This line rendered as bold text.**
+***This line rendered as italicized and bold text.***
+~~This line of text will be strikethrough.~~
+# There is no R Markdown code for underline but HTML can be entered directly.
+You can use the '<u>' tag to <u>underline text</u>.
+# There is no R Markdown code for mark but HTML can be entered directly.
+You can use the '<mark>' tag to <mark>highlight text</mark>.
+This '^text or number^' rendered as ^superscript^.
+```
+
+
+Complete quotes including source, open and closing quote symbols.
+
+> It is further proof that refugee movements and the broader issue of migration of populations ... is a global challenge that cannot be confined to a few countries.
+>
+> Filippo Grandi
+
+Simple quote with no source nor quote symbols.
+
+> The situation in South Sudan is far too fragile and dangerous for people to go back.
+
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+<abbr title="The United Nations High Commissioner for Refugees">UNHCR</abbr>
+
+This is a footnote^[Text of the footnote], it can include anything and can also be stylize UNHCR^[The **United Nations** High Commissioner for Refugees <https://www.unhcr.org/>]
+
+* item 1
+* item 2
+    + sub-item 2.1
+    + sub-item 2.2
+* item 3
+    + sub-item 3.1
+    + sub-item 3.2
+    
+1. item 1
+2. item 2
+    1. item 2.1
+    2. item 2.2
+3. item 3
+    1. item 3.1
+    2. item 3.2
+
+## Second level
+
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+```{r table, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(tail(iris, 8),
+             caption = "Population of concern to UNHCR for the last 5 years",
+             table.attr = "class=\'table\'", format = "html")
+```
+
+Finally, be sure to remove this message! This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+![Placeholder](img/169_pics_landscape.png)
+*Image caption text. &copy; UNHCR Photographer name*
+
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+```{r single-bar, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Total displaced people - UNHCR Refugee Statistics"}
+library(tidyverse)
+library(unhcrdatapackage)
+library(scales)
+library(ragg)
+library(unhcrthemes)
+poc_2010_2020 <- end_year_population_totals_long %>% 
+  filter(Year >= 2010)
+total_displaced_2010_2020 <- poc_2010_2020 %>% 
+  group_by(Year) %>% 
+  summarise(total_disp = sum(Value))
+
+ggplot(total_displaced_2010_2020, aes(x = Year, y = total_disp)) +
+  geom_col(fill = unhcr_pal(1, "pal_blue")) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::label_number_si()) +
+  labs(x = NULL, y=NULL,
+      title = "Total people displaced | 2010-2020",
+      subtitle = "Number of people in millions",
+      caption = "Source: UNHCR Data Finder") +
+  unhcrthemes::theme_unhcr(grid = "Y")
+```
+
+# And now part 3
+
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+```{r table-2, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(tail(iris, 8),
+             caption = "Population of concern to UNHCR")
+```
+
+## Second level
+
+::: {.bg-grey}
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+Finally, be sure to remove this message!
+:::
+
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="New caption"}
+
+ggplot(total_displaced_2010_2020, aes(x = Year, y = total_disp)) +
+  geom_col(fill = unhcr_pal(1, "pal_blue")) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::label_number_si()) +
+  labs(x = NULL, y=NULL,
+      title = "Total people displaced | 2010-2020",
+      subtitle = "Number of people in millions",
+      caption = "Source: UNHCR Data Finder") +
+  unhcrthemes::theme_unhcr(grid = "Y")
+```
+
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Other caption"}
+
+ggplot(total_displaced_2010_2020, aes(x = Year, y = total_disp)) +
+  geom_col(fill = unhcr_pal(1, "pal_blue")) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::label_number_si()) +
+  labs(x = NULL, y=NULL,
+      title = "Total people displaced | 2010-2020",
+      subtitle = "Number of people in millions",
+      caption = "Source: UNHCR Data Finder") +
+  unhcrthemes::theme_unhcr(grid = "Y")
+```
+
+
+# And now part 3
+
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+
+## Second level
+
+::: {.bg-grey}
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+Finally, be sure to remove this message!
+:::
+
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Another New caption"}
+
+ggplot(total_displaced_2010_2020, aes(x = Year, y = total_disp)) +
+  geom_col(fill = unhcr_pal(1, "pal_blue")) +
+  scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::label_number_si()) +
+  labs(x = NULL, y=NULL,
+      title = "Total people displaced | 2010-2020",
+      subtitle = "Number of people in millions",
+      caption = "Source: UNHCR Data Finder") +
+  unhcrthemes::theme_unhcr(grid = "Y")
+```
+
+Finally, be sure to remove this message!
+This file is what a user will see when they select your template. Make sure that you update the fields in the yaml header. In particular you will want to update the `output` field to whatever format your template requires.
+
+This is a good place to demonstrate special features that your template provides. Ideally it should knit out-of-the-box, or at least contain clear instructions as to what needs changing.

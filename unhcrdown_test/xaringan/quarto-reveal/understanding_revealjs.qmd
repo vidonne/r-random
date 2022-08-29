@@ -1,0 +1,120 @@
+---
+title: "Understanding Reveal JS"
+author: "CVidonne"
+format:
+  revealjs:
+    incremental: false
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+
+## Bullets
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+# Section
+
+## Let's try to get it
+
+### Heading 3
+
+#### Heading 4
+
+#### Heading 5
+
+###### heading 6
+
+Normal text with **bold**, a bit of *italic*, and some ***bold-italic***
+
+## List incemental
+
+Incremental
+
+::: {.incremental}
+
+- Eat spaghetti
+- Drink wine
+
+:::
+
+Non-incrementel
+
+::: {.nonincremental}
+
+- Eat spaghetti
+- Drink wine
+
+:::
+
+## Columns
+
+:::: {.columns}
+
+::: {.column width="20%"}
+contents...
+:::
+
+::: {.column width="20%"}
+contents...
+:::
+
+::: {.column width="60%"}
+contents...
+:::
+
+::::
+
+## NO Title
+
+Just remove title and author from YAML
+
+## Slide with a pause
+
+content before the pause
+
+. . .
+
+content after the pause
+
+## Slide with speaker notes
+
+Slide content
+
+::: {.notes}
+Speaker notes go here.
+:::
+
+## Slide Title
+
+Slide content
+
+::: aside
+Some additional commentary of more peripheral interest.
+:::
+
+## Slide Title
+
+- Green ^[A footnote]
+- Brown
+- Purple
+
+::: aside
+Some additional commentary of more peripheral interest.
+:::
+
+## Slide Title {background-color="#0072bc"}
+
+content change colors?

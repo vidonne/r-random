@@ -1,0 +1,195 @@
+---
+title: "Theming with bslib and thematic"
+output: 
+  html_document_base:
+    theme:
+      version: 5
+      variable-prefix: -unhcr
+      enable-rounded: false
+      gray-100: "#f2f2f2"
+      gray-200: "#E6E6E6"
+      gray-300: "#CCCCCC"
+      gray-400: "#b3b3b3"
+      gray-500: "#999999"
+      gray-600: "#666666"
+      gray-700: "#4d4d4d"
+      gray-800: "#333333"
+      gray-900: "#222222"
+      blue: "#0072BC"
+      yellow: "#FAEB00"
+      green: "#00B398"
+      red: "#EF4A60"
+      info: "#8EBEFF"
+      warning: "#E1CC0D"
+      link-decoration: none
+      link-hover-color: "#222222"
+      link-hover-decoration: underline
+      base_font:
+        google: Lato
+      code_font:
+        google: Source Code Pro
+      blockquote-footer-color: "#222222"
+      mark-bg: "#FFF9CB"
+    css: ["scss/_unhcrcolors.scss", "scss/html_page.scss"]
+    includes:
+      in_header: html/header_html_page.html
+    toc: true
+    toc_float: true
+---
+
+# Typography
+
+## Headings
+
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+
+## Text
+
+::: {.lead}
+This is a lead paragraph. It stands out from regular paragraphs.
+:::
+
+You can use the mark tag to <mark>highlight text</mark>.
+
+~~This line of text is meant to be treated as deleted text.~~
+
+
+<u>This line of text will render as underlined.</u>
+
+**This line rendered as bold text.**
+
+*This line rendered as italicized text.*
+
+This ^text or number^ rendered as ^superscript^.
+
+<abbr title="The United Nations High Commissioner for Refugees">UNHCR</abbr>
+
+Full link <https://pagedown.rbind.io/>
+
+Inline one [my link](https://pagedown.rbind.io/)
+
+> A well-known quote, contained in a blockquote element.
+>
+> Someone famous in Source Title
+
+> A well-known quote, contained in a blockquote element.
+
+`Some inline code example`
+
+```{r some-code, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+Some code in code block example
+```
+
+## Lists
+
+- This is a list.
+- Style also applies to immediate child elements.
+- Nested lists:
+    - are unaffected by this style
+    - will still show a bullet
+    - and have appropriate left margin
+- This may still come in handy in some situations.
+
+1. item 1
+2. item 2
+    1. item 2.1
+    2. item 2.2
+3. item 3
+    1. item 3.1
+    2. item 3.2
+    
+1. item 1
+* item 2
+    1. item 2.1
+    2. item 2.2
+3. item 3
+    * item 3.1
+    * item 3.2
+    
+# Tables
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE }
+knitr::kable(head(iris),
+             table.attr = "class=\'table\'",
+             format = "html",
+             caption = "Population of concern to UNHCR for the last 5 years")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE }
+knitr::kable(head(iris),
+             table.attr = "class=\'table table-striped\'",
+             format = "html",
+             caption = "Population of concern to UNHCR for the last 5 years")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE }
+knitr::kable(head(iris),
+             table.attr = "class=\'table table-striped table-primary\'",
+             format = "html",
+             caption = "Population of concern to UNHCR for the last 5 years")
+```
+
+# Tabs
+
+## Results {.tabset}
+
+### Tab One
+
+Content of tab 1
+
+### Tab Two
+
+Content of tab 2
+
+## {-}
+
+With the above unnumbered (`{-}`) and empty section header,
+we can end the tabset and continue to write more paragraphs.
+
+## Results {.tabset .tabset-pills}
+
+### Tab One
+
+Content of tab 1
+
+### Tab Two
+
+Content of tab 2
+
+## {-}
+
+With the above unnumbered (`{-}`) and empty section header,
+we can end the tabset and continue to write more paragraphs.
+
+# Buttons
+
+<button type="button" class="btn btn-primary">Primary</button>
+<button type="button" class="btn btn-secondary">Secondary</button>
+<button type="button" class="btn btn-success">Success</button>
+<button type="button" class="btn btn-danger">Danger</button>
+<button type="button" class="btn btn-warning">Warning</button>
+<button type="button" class="btn btn-info">Info</button>
+<button type="button" class="btn btn-light">Light</button>
+<button type="button" class="btn btn-dark">Dark</button>
+
+<button type="button" class="btn btn-link">Link</button>
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam convallis ex quis sodales mattis. Donec lacinia ex a quam ullamcorper, eget consequat lectus gravida. Phasellus a ultrices purus. Donec ornare, urna id commodo mollis, magna lorem luctus ipsum, vel mattis ex risus quis nulla. Proin id orci libero. Curabitur ut sapien a lacus tincidunt aliquam ut a nisl. Nunc massa mi, porta eu tristique sed, vulputate blandit lacus. Sed viverra sapien sed blandit congue. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer mattis sed est ut tempor. In lobortis felis non lacus pharetra, id posuere velit maximus. Aenean volutpat dolor non sem sodales, id interdum erat feugiat. Nunc convallis erat vitae finibus bibendum. Phasellus imperdiet ut odio tempus vulputate.
+
+Nullam ac augue vitae orci tempor dignissim a et quam. Curabitur leo nulla, maximus at dolor in, dapibus porttitor leo. Quisque vehicula tincidunt viverra. In hac habitasse platea dictumst. Aliquam erat volutpat. Ut laoreet sit amet elit ac pretium. Pellentesque odio ligula, lobortis eget pulvinar in, rutrum ut nisi. Nam nec dolor in risus imperdiet rhoncus.
+
+Nulla facilisi. Quisque molestie nisi risus, at facilisis lacus eleifend ac. Vestibulum interdum purus nec ornare faucibus. Praesent ut ante sed sem elementum porttitor ac at mauris. Nulla quis iaculis velit, ut tristique velit. Aenean eleifend est porta massa molestie, sit amet blandit velit tempus. Mauris eu dolor eu ex condimentum interdum. Phasellus laoreet sit amet arcu quis sagittis. Nam fermentum finibus nisl, sed auctor lorem. Sed viverra est in placerat finibus. Vivamus ut nisi erat. Pellentesque viverra, neque sed feugiat blandit, quam risus egestas ante, vitae cursus turpis quam ut tellus.
+
+Fusce commodo, leo in faucibus viverra, ligula libero malesuada nunc, rutrum tincidunt lacus lorem eget libero. Vivamus imperdiet quam non risus fermentum, vitae tempus urna interdum. Pellentesque ex orci, consectetur in ligula sed, maximus posuere turpis. Etiam molestie gravida tempor. Nullam a interdum arcu. Nullam finibus justo erat, eget aliquet enim hendrerit nec. Duis libero risus, placerat a lobortis et, aliquet eu ipsum. Cras libero velit, varius quis tellus vitae, tempor lobortis lacus. Fusce tincidunt tempus dolor, laoreet egestas justo feugiat et. Aenean vel sodales ante. Aliquam venenatis, metus ut aliquet venenatis, orci ligula sodales purus, ac feugiat ante purus consectetur dui. Sed a imperdiet neque.
+
+Nunc placerat tincidunt felis eu lacinia. Vestibulum iaculis elit sed ligula mattis molestie ac ullamcorper risus. Morbi faucibus sed dolor sit amet vestibulum. Nullam viverra diam eget ipsum finibus, quis mollis odio suscipit. Phasellus et nisl dignissim, mattis erat sed, viverra ex. Fusce tristique fringilla diam vel tincidunt. Nunc libero diam, molestie vel porttitor porta, ultricies quis libero. Morbi sollicitudin eget nunc et rhoncus. Praesent pulvinar, diam in egestas tincidunt, elit lectus bibendum sapien, eget fringilla sem dui vitae dui. Morbi dignissim feugiat tortor ac aliquet. Nullam neque ipsum, fermentum a ante eu, malesuada accumsan massa. Sed eu justo at metus pellentesque ultricies nec quis erat. Cras molestie mauris vitae cursus placerat. In nec porttitor turpis, sit amet molestie magna. Nullam et laoreet nunc. Fusce lacinia eros a lacus volutpat ultricies.

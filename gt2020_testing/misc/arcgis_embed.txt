@@ -1,0 +1,12 @@
+Webapp ifram
+<iframe src="https://unhcr.maps.arcgis.com/apps/instant/minimalist/index.html?appid=0b127e96170e4016b3f5db786fcc6100" width="600" height="450" frameborder="0" style="border:0" allowfullscreen>iFrames are not supported on this page.</iframe>
+
+
+Experience
+<iframe src="https://experience.arcgis.com/experience/bc9d45715ff8459aa1cc28de1fa9ba76" width="100%" height="1000" frameborder="0" style="border:0" allowfullscreen>iFrames are not supported on this page.</iframe>
+
+
+pocket
+<iframe src="https://unhcr.maps.arcgis.com/apps/webappviewer/index.html?id=7949997cc80f41b6a048505e9cb1d42a" width="100%" height="1000" frameborder="0" style="border:0" allowfullscreen>iFrames are not supported on this page.</iframe>
+
+<style>.embed-container {position: relative; padding-bottom: 80%; height: 0; max-width: 100%;} .embed-container iframe, .embed-container object, .embed-container iframe{position: absolute; top: 0; left: 0; width: 100%; height: 100%;} small{position: absolute; z-index: 40; bottom: 0; margin-bottom: -15px;}</style><div class="embed-container"><iframe width="500" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="test_embed_gt" src="//unhcr.maps.arcgis.com/apps/Embed/index.html?webmap=a9cf257a65df4b969d3f83a985d0022d&extent=-94.0614,-37.0211,79.5226,54.2645&zoom=true&previewImage=false&scale=true&legend=true&disable_scroll=true&theme=light"></iframe></div>
