@@ -1,0 +1,606 @@
+---
+title: "UNHCR Global Trends 2021"
+subtitle: "Summary of key trends"
+output:
+  unhcrdown::html_slides:
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  echo = FALSE,
+  fig.showtext = TRUE,
+  dpi = 300,
+  fig.retina = 4,
+  dev = "ragg_png"
+)
+```
+
+```{r package, include=FALSE}
+# Load packages
+library(tidyverse) # Data wrangling
+library(unhcrdatapackage) # UNHCR data
+library(unhcrthemes) # UNHCR chart style
+library(fontawesome) # Humanitarian icons
+library(scales) 
+library(httr2) # Interact with Refugee Data API
+library(jsonlite) # Parse API response
+library(readxl) # Import XLS files
+library(ggbraid) # Add colored area between lines
+library(ggtext) # Custom labeling
+```
+
+## Forced displacement
+
+.large[.blue[**89.3 million**]] forcibly displaced worldwide at the end of 2021 – increasing to more than .large[.blue[**100 million**]] by May 2022
+
+.pull-left[
+- **27.1 million** refugees (+754,400), including 5.8 million Palestinian refugees under UNRWA’s mandate.
+
+- **53.2 million** IDPs<sup class="small">1</sup> (+5.1 million).
+
+- **4.6 million** asylum seekers (+438,400).
+
+- **4.4 million** Venezuelans displaced abroad (VDA) (+544,300).
+]
+
+.pull-right[
+```{r forced-displacement, out.width="100%", fig.height=5.5}
+### Population data from Refugee data finder: REF, ASY, VDA | 2012-2021
+unhcr_ref_asy_vda <- unhcrdatapackage::end_year_population_totals_long |>
+    filter(
+        Year >= 2012 & Year <= 2021,
+        Population.type == "REF" |
+        Population.type == "ASY" |
+        Population.type == "VDA"
+    )  |>
+    group_by(Year, Population.type.label) |>
+    summarise(total = sum(Value, na.rm = TRUE)) |>
+    rename(year = Year, pop_type = Population.type.label) |> 
+    mutate(pop_type = case_when(
+      pop_type == "Refugees" ~ "Refugees under UNHCR's mandate",
+      pop_type == "Venezuelans Displaced Abroad" ~ "Venezuelans displaced abroad",
+      TRUE ~ pop_type)
+      )
+
+### Refugee Data API
+# Refugee data finder API URL
+rdf_url <- request("https://api.unhcr.org/population/v1")
+
+### IDMC IDP stock | 2012 - 2021
+# Call API for IDMC data
+idmc_api <- rdf_url |>
+  # Then we add on the path
+  req_url_path_append("idmc") |>
+  # Add query parameters
+  req_url_query(yearFrom = 2012, yearTo = 2021) |>
+  req_perform() |>
+  resp_body_json()
+
+# Create idmc df
+idmc_idp <- bind_rows(idmc_api$items) |>
+    select(year, total) |>
+    mutate(pop_type = "IDPs") |>
+    relocate(total, .after = pop_type)
+
+### UNRWA refugees | 2012 - 2021
+# Call API for UNRWA data
+unrwa_api <-  rdf_url |>
+  # Then we add on the path
+  req_url_path_append("unrwa") |>
+  # Add query parameters
+  req_url_query(yearFrom = 2012, yearTo = 2021) |>
+  req_perform() |>
+  resp_body_json()
+
+# Create unrwa df
+unrwa_ref <- bind_rows(unrwa_api$items) |>
+    select(year, total) |>
+    mutate(pop_type = "Refugees under UNRWA's mandate") |>
+    relocate(total, .after = pop_type)
+
+### Latest forced displacement estimates 2022
+estim_force_displ <- tribble(
+    ~year, ~pop_type, ~total,
+    2022, "Latest available estimates", 101088700,
+)
+
+### Forced displacement: REF, ASY, VDA, IDMC IDP, UNRWA REF and estimates | 2012-2021
+# Bind all data sources together
+force_displ_2012_2021 <- rbind(unhcr_ref_asy_vda, idmc_idp, unrwa_ref, estim_force_displ) |>
+    mutate(pop_type = factor(pop_type,
+                      levels = c("Latest available estimates", 
+                      "Venezuelans displaced abroad", "Asylum-seekers", 
+                      "Refugees under UNRWA's mandate",
+                      "Refugees under UNHCR's mandate", "IDPs")))
+
+# Plot
+ggplot(data = force_displ_2012_2021,
+       aes(x = year, y = total,
+           fill = pop_type, group = pop_type)) +
+  geom_col() +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  scale_y_continuous(labels = scales::label_number(scale_cut = cut_short_scale()),
+                     expand = expansion(c(0, 0.1))) +
+  scale_fill_unhcr_d(guide=guide_legend(reverse = TRUE), direction = -1,
+                     palette = "pal_unhcr_poc",
+                     nmax = 9, order = c(4, 1:3, 9, 8)) +
+  labs(title = "People forced to flee worldwide | 2012-2022",
+    caption = "Source: UNHCR Refugee Data Finder\n© UNHCR, The UN Refugee Agency") +
+  theme_unhcr(grid = "Y",
+              axis_title = FALSE)
+```
+
+]
+
+.footnote[
+<sup class="small">1</sup>Internal Displacement Monitoring Centre
+]
+
+---
+
+## Forced displacement
+
+.center[
+Insert Map
+]
+
+???
+Forced displacement could become one of **defining the legacies of the 21st century.
+
+Conflicts around the world are substantially increasing in both numbers and magnitude.
+
+A total of 23 countries with a population of **850 million people**, faced high- or medium-intensity conflicts in 2021.
+
+2022 has already seen **millions displaced by the war** in Ukraine, while the humanitarian crises in Myanmar and Burkina Faso and elsewhere continued to deteriorate.
+
+---
+
+## Demographics
+
+Demographic .blue[**coverage continues to improve**] for forcibly displaced people and for other population groups.
+
+.pull-left[
+```{r demographic-table}
+### Demographics women and children by population type | 2021
+# Data from RDF all pop but IDP and UNRWA
+dem_unhcr <- unhcrdatapackage::demographics |> 
+  filter(Year == 2021) |> 
+  mutate(ChildrenTotal = rowSums(across(Female04:Female1217), na.rm = TRUE) + rowSums(across(Male04:Male1217), na.rm = TRUE)) |> 
+  select(Population.type.label, FemaleTotal, ChildrenTotal, Total) |> 
+  group_by(Population.type.label) |> 
+  summarise(f_total = sum(FemaleTotal, na.rm = TRUE),
+            c_total = sum(ChildrenTotal, na.rm = TRUE),
+            total = sum(Total, na.rm = TRUE),
+            f_perc = f_total/total,
+            c_perc = c_total/total) |>
+  filter(Population.type.label != "",
+         Population.type.label != "Internally Displaced Persons") |>
+  select(Population.type.label, f_perc, c_perc) |> 
+  rename(pop_type = Population.type.label,
+         female_perc = f_perc,
+         children_perc = c_perc)
+
+# IDMC and UNRWA demographic data
+dem_idmc_unwra <- tribble(
+  ~pop_type, ~female_perc, ~children_perc,
+  "Palestine refugees under UNRWA's", 0.49, 0.31,
+  "Internally displaced people", 0.5, 0.43,
+)
+
+# Bind all data together and reorder
+dem_table <- rbind(dem_unhcr, dem_idmc_unwra) |> 
+  mutate(pop_type = factor(pop_type,
+                           levels = c("Refugees", "Palestine refugees under UNRWA's",
+                                      "Venezuelans Displaced Abroad", "Asylum-seekers",
+                                      "Internally displaced people", "Refugee returns",
+                                      "IDP returns", "Stateless Persons", "Others of Concern to UNHCR"))) |> 
+  arrange(pop_type) |> 
+  mutate(female_perc = paste0(round(female_perc*100, 0), "%"),
+         children_perc = paste0(round(children_perc*100, 0), "%")) 
+  
+# Demographic table
+dem_table |> 
+  knitr::kable(format = "html",
+               col.names = c("Population group", "Female", "Children"),
+               caption = "Percentage of women and children by population group | 2021<br>Note: IDPs figures from Internal Displacement Monitoring Centre",
+               align = "lrr",
+               table.attr = "class=\"table  table-blue table-noborder small\"")
+```
+]
+
+.pull-right[
+```{r demographic-plot, out.width="100%", fig.height=4}
+# Demographic plot data
+dem_plot <- tribble(
+  ~age, ~male, ~female,
+  "60+", 0.03, 0.03,
+  "18-59", 0.27, 0.26,
+  "0-17",  0.21, 0.20,
+)
+
+# Plot
+ggplot(dem_plot) +
+  geom_col(aes(-male,
+    age,
+    fill = "Male"
+  ),
+  width = 0.5
+  ) +
+  geom_col(aes(female,
+    age,
+    fill = "Female"
+  ),
+  width = 0.5
+  ) +
+  geom_text(aes(-male/2,
+    age,
+    label = percent(abs(male))
+  ),
+  size = 8 / .pt,
+  color = "white",
+  fontface = "bold"
+  ) +
+  geom_text(aes(female/2,
+    age,
+    label = percent(abs(female))
+  ),
+  size = 8 / .pt,
+  color = "white",
+  fontface = "bold"
+  ) +
+  labs(
+    title = "Demographics of people who have been forcibly displaced | 2021",
+    subtitle = "Children account for 30 percent of the world's population, but 41 percent of all forcibly displaced people.",
+    caption = "Note: figures do not add up to 100 per cent due to rounding\nSource: 2021 Global Trends\n© UNHCR, The UN Refugee Agency"
+  ) +
+  scale_x_continuous(expand = expansion(c(0.1, 0.1))) +
+  scale_fill_manual(values = setNames(
+    unhcr_pal(n = 3, "pal_unhcr")[c(2, 1)],
+    c("Male", "Female")
+  )) +
+  annotate("text", x = -.14, y = 3.3, label = "Male",
+           size = 9 / .pt, color = unhcr_pal(n = 1, "pal_blue"),
+           fontface = "bold") +
+  annotate("text", x = .14, y = 3.3, label = "Female",
+           size = 9 / .pt, color = unhcr_pal(n = 1, "pal_navy"),
+           fontface = "bold") +
+  theme_unhcr(
+    grid = FALSE,
+    axis = FALSE,
+    axis_title = FALSE,
+    axis_text = "y",
+    legend = FALSE
+  )
+```
+]
+
+---
+
+## Solutions
+
+.pull-left[
+The availability of durable solutions is **not keeping track** with forced displacement.
+
+- The global forced displaced population has more than doubled since 2012, while the available solutions have not kept pace.
+
+- Durable solutions have therefore become an option for fewer and fewer refugees and internally displaced people.
+
+- Greater international solidarity and responsibility-sharing are urgently required.
+]
+
+.pull-right[
+```{r solution-plot, out.width="100%", fig.height=5.5}
+# Solutions
+# Solutions for refugees | 1990-2021
+sol_ref <- unhcrdatapackage::solutions |> 
+  filter(Year >= 1990 & Year <= 2021) |> 
+  mutate(sol_ref = rowSums(across(RST:RET), na.rm = TRUE)) |> 
+  group_by(Year) |> 
+  summarise(sol_ref = sum(sol_ref, na.rm = TRUE)) |> 
+  pivot_longer(cols = c(sol_ref), names_to = "pop_type", values_to = "total") 
+
+# New refugee | 1990-2021
+# URL of excel file
+flow_url <- "https://unhcr-web.github.io/refugee-statistics/0002-Explainers/Data/UNHCR_Flow_Data.xlsx"
+# Temp file creation and download with curl as readxl can't read online excel file
+tf = tempfile(fileext = ".xlsx")
+curl::curl_download(flow_url, tf)
+
+# Load and arrange data
+new_ref <- readxl::read_excel(tf, sheet = "DATA") |> 
+  filter(Year >= 1990 & Year <= 2021,
+         PT == "REF") |> 
+  group_by(Year, PT) |> 
+  summarise(total = sum(Count, na.rm = TRUE)) |> 
+  arrange(Year) |> 
+  mutate(pop_type = if_else(PT == "REF", "new_ref","")) |> 
+  select(!PT)
+
+# Solution for idps | 2009-2021
+sol_idp <- unhcrdatapackage::solutions |> 
+  filter(Year >= 2009 & Year <= 2021) |> 
+  group_by(Year) |> 
+  summarise(sol_idp = sum(RDP, na.rm = TRUE)) |> 
+  pivot_longer(cols = c(sol_idp), names_to = "pop_type", values_to = "total") 
+
+# New idps IDMC | 2009-2021
+# Link to hDX csv
+idmc_hdx <- read_csv("https://data.humdata.org/dataset/459fc96c-f196-44c1-a0a5-1b5a7b3592dd/resource/0fb4e415-abdb-481a-a3c6-8821e79919be/download/displacement_data.csv")
+
+new_idp <- idmc_hdx |> 
+  filter(ISO3 != "#country+code",
+         Year >= 2009 & Year <= 2021) |> 
+  group_by(Year) |> 
+  summarise(new_idp = sum(as.integer(`Conflict Internal Displacements`), na.rm = TRUE)) |> 
+  pivot_longer(cols = c(new_idp), names_to = "pop_type", values_to = "total") 
+
+# Bind all data together
+sol_vs_new <- rbind(sol_ref, new_ref, sol_idp, new_idp) |> 
+  mutate(Year = as.integer(Year))
+
+# Create wide version for area between lines
+sol_vs_new_wide <- sol_vs_new |> 
+  pivot_wider(names_from = pop_type, values_from = total)
+
+# DF for labeling lines directly
+sol_vs_new_label <- sol_vs_new |> 
+  filter(Year == 2021) |> 
+  mutate(label = case_when(
+    pop_type == "sol_ref" ~ "Refugee solutions<sup>2</sup>",
+    pop_type == "new_ref" ~ "New recognitions<sup>3</sup>",
+    pop_type == "sol_idp" ~ "IDP returns<sup>1</sup>",
+    pop_type == "new_idp" ~ "New internal displacements<sup>1</sup>",
+    TRUE ~ pop_type
+  ))
+
+ggplot() +
+  geom_line(data = sol_vs_new, aes(x = Year, y = total, color = pop_type, group = pop_type)) +
+  geom_braid(data = sol_vs_new_wide, aes(x = Year, ymin = new_ref, ymax = sol_ref, fill = new_ref < sol_ref), alpha = .3) +
+  geom_braid(data = sol_vs_new_wide, aes(x = Year, ymin = new_idp, ymax = sol_idp, fill = new_idp < sol_idp), alpha = .3) +
+  geom_textbox(data = sol_vs_new_label, aes(x = Year, y = total, color = pop_type, label = label),
+                size = 7 / .pt, nudge_x = 0.1, nudge_y = c(4e5, -.15e5, 0, 0), width = unit(1.8, "cm"),
+                lineheight = .9, hjust = 0, fill = NA, box.color = NA) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  scale_y_continuous(labels = scales::label_number(scale_cut = cut_short_scale()),
+                     breaks = scales::pretty_breaks(n = 7),
+                     limits = c(0, NA),
+                     expand = expansion(c(0, 0.1))) +
+  scale_color_unhcr_d(nmax = 4, order = c(2, 4, 4, 2)) +
+  scale_fill_unhcr_d(nmax = 4, order = c(2,4))+
+  labs(title = "Forced displacement outpaces the available solutions during the last decade",
+       caption = "1. IDP data only available from 2009, 2. New refugee recognitions and refugee-like increases, 3. Refugee solutions (returns, resettlement and naturalization)\nSource: UNHCR Global Trends 2021\n© UNHCR, The UN Refugee Agency") +
+  coord_cartesian(clip = "off") +
+  theme_unhcr(grid = "Y",
+              axis_title = FALSE,
+              legend = FALSE) +
+  theme(plot.margin = margin(r = 50))
+```
+
+]
+
+---
+class: middle, center, inverse
+
+# Refugees and<br>Venezuelans displaced abroad
+
+## `r fontawesome::fa_i("person-walking-dashed-line-arrow-right")`
+
+---
+
+## Refugees and Venezuelans displaced abroad
+
+.pull-left[
+The number of refugees has **doubled** in the last ten years to reach .large[.blue[**21.3 million**]].
+
+Key changes within the year include:
+
+- Sharp growth in VDA primarily in Peru, Colombia and Ecuador as COVID-19-related travel restrictions eased in the region.
+
+- As conflicts persist or worsened, the large refugee populations from Syria, Afghanistan, South Sudan, the central African Republic and Myanmar saw further increases in the year.
+
+- Refugee populations in Türkiye, Uganda grew by more than 100,000, while the population in Chad saw an increase of more than 75,000.
+]
+
+
+.pull-right[
+Insert map
+]
+
+---
+
+## Refugees and Venezuelans displaced abroad
+
+.blue[**83 per cent**] are hosted by low- and middle-income countries. .blue[**72 per cent**]  are in neighboring countries.
+
+.pull-left[
+Insert chart
+]
+
+.pull-right[
+Insert chart
+]
+
+.footnote[
+Note – as of May 2022: Ukraine 4.9 million
+]
+
+???
+Syria and Venezuela are the largest countries of origin for people displaced across borders.
+Türkiye (15 per cent of global total), Colombia  and Uganda remained the three largest hosting countries.
+
+---
+class: middle, center, inverse
+
+# Internally Displaced Persons
+
+## `r fontawesome::fa_i("person-walking-arrow-right")`
+
+---
+
+## IDPs
+
+IDPs account for more than .large[.blue[**60 per cent**]] of all forcibly displaced people worldwide.
+
+.pull-left[
+- Throughout the year, there were 9.3 million new internal displacements due to conflicts in the 35 countries where UNHCR is operationally active. 5.3 million IDPs returned during the year.
+
+- There were an additional 23.7 million internal displacements in 2021 in the context of disasters and due to the impacts of climate change during the year, most of whom returned.<sup class="small">1</sup>
+]
+
+.pull-right[
+Insert chart
+]
+
+.footnote[
+<sup class="small">1</sup>Internal Displacement Monitoring Centre
+]
+
+---
+
+## IDPs
+
+.blue[**Almost all regions**] globally witnessed large new internal displacements in 2021.
+
+.pull-left[
+- More than three-quarters of all new internal displacements in 2021 occurred in Sub-Saharan Africa.
+
+- In other regions, 1.2 million new displacements stemming from humanitarian crisis in Afghanistan (777,400) and Myanmar (433,000). Many Afghans returned during the year (791,000).
+]
+
+.pull-right[
+Insert chart
+]
+
+---
+
+## IDPs
+
+At least .blue[**5 million more people**] remain internally displaced at the end of 2021, compared to the previous year
+
+.pull-left[
+- The IDP population increased in nine out of ten countries that already had the largest IDP populations.
+
+- In Colombia, further to a revision of IDP figures in consultation with the Government, 6.8 million IDPs were still in need of humanitarian assistance and solutions at the end of the year.
+
+- At end-May 2022, more than 7.1 million IDPs remained displaced in Ukraine.
+]
+
+
+.pull-right[
+Insert chart
+]
+
+---
+class: middle, center, inverse
+
+# Asylum Seekers
+
+## `r fontawesome::fa_i("hands-holding-circle")`
+
+---
+
+## Asylum Seekers
+
+In 2021, States and UNHCR collectively registered some .blue[**1.7 million**] individual asylum applications in 155 countries.
+
+.pull-left[
+- 35% increase compared to 2020 yet remains below pre-COVID-19 level.
+
+- 1.4 million new individual asylum applications, 66% received in just ten countries. 
+
+- Large increases in asylum applications in Germany, Mexico, the Democratic Republic of the Congo and Costa Rica, but also significant decreases in Brazil, Peru, Spain and the United States of America.
+
+- Major source countries were Afghanistan (+49,300 to 125,600), Nicaragua (+92,700 to 111,600) and Syria (+37,600 to 110,000).
+]
+
+.pull-right[
+Insert chart
+]
+
+---
+
+## Asylum Seekers
+
+.blue[**794,100 people**] received protective status
+
+.pull-left[
+- 494,900 received individual refugee or other protection status and 299,200 people received international protection through group procedures.
+
+- The Total Protection rate stood at 49% consistent with previous years.
+
+- 4.6 million pending asylum seekers at the end-year. There were significant reductions in Canada, Ecuador, France and Greece, but increases in 95 countries, notably in Mexico, Costa Rica and the United States.
+
+- 519,200 individual asylum applications were rejected.
+]
+
+.pull-right[
+Insert chart
+]
+
+---
+class: middle, center, inverse
+
+# Solutions
+
+## `r fontawesome::fa_i("person-walking-arrow-loop-left")`
+
+---
+
+## Solutions
+
+The availability of durable solutions to refugees **improved** compared to 2020. It remains however just a small fraction of the global needs
+
+.pull-left[
+**Refugee Returns**<br>Voluntary repatriation returned to pre-COVID-19 levels, reaching 429,300. The majority of refugee returns were to South Sudan (270,200), Burundi (40,900) and Syria (36,500).
+
+**Resettlement**<br>57,500 refugees were resettled in 2021, remaining almost 50% below 2019 levels and accounting for just 4 per cent of the global resettlement needs.
+
+
+**Naturalization**<br>In 2021, an estimated 56,700 refugees from 161 different countries of origin naturalized in 23 host countries, a two-thirds increase compared to 2020. 89 per cent of all reported naturalizations occurred in European countries.
+]
+
+.pull-right[
+Insert chart
+]
+
+---
+class: middle, center, inverse
+
+# Stateless people
+
+## `r fontawesome::fa_i("id-card")`
+
+---
+
+## Stateless people
+
+Progress was made on improving data on stateless populations and supporting the acquisition of citizenship
+
+.pull-left[
+- Increase in number of known  stateless people to 4.3 million, driven by:
+  1. additional countries reporting stateless populations for the first time,
+  2. improved registration and coverage,
+  3. children being born into statelessness.
+
+- Record number of stateless people acquired citizenship (81,200). Since the start of the #IBelong Campaign in 2014, 485,400 people have acquired a nationality or had their nationality confirmed.
+]
+
+.pull-right[
+Insert chart
+]
+
+---
+class: middle, center, inverse
+
+# For more information
+
+### www.unhcr.org/refugee-statistics
