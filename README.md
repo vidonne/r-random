@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 An online place to play around with new visualization ideas and
-approches.
+approaches.
 
 All content that needs to be published online should be placed in a
 subfolder inside the **docs** folder.
