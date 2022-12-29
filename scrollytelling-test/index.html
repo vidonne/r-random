@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scrollytelling test</title>
+    <meta name="description"
+        content="UNHCR Data Visualization platform is one-stop-shop of insights, guidelines, and tools for creating brand-compliant data visualization and improving Data Storytelling.">
+    <meta name="keywords"
+        content="Data,Data viz,Data visualization,Plot,Chart,Graphic,Infographic,Best practices,Templates,Tutorials,Data visualization guidelines,Data visualization tools,Microsoft chart template,Power BI,Illustrator,R,ggplot 2,Python,Matplotlib,D3js,Data storytelling">
+    <meta name="author" content="Cedric Vidonne">
+    <meta name="author" content="Lei Chen">
+    <link href="assets/css/unhcrmain.min.css" rel="stylesheet" />
+	  <script src="assets/js/vendor/jquery.min.js"></script>
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://unpkg.com/intersection-observer@0.12.0/intersection-observer.js"></script>
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script src="https://unpkg.com/scrollama"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://public.flourish.studio/resources/embed.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    
+    
+    <style>
+    /* Small devices (tablets, 768px and up) */
+    /* @media (min-width: @screen-sm-min) { ... } */
+
+    /* Medium devices (desktops, 992px and up) */
+    /* @media (min-width: @screen-md-min) { ... } */
+
+    /* Large devices (large desktops, 1200px and up) */
+    /* @media (min-width: @screen-lg-min) { ... } */
+
+    /* landing */
+    .video-background-holder {
+      position: relative;
+      background-color: black;
+      height: calc(100vh - 72px);
+      min-height: 25rem;
+      width: 100%;
+      overflow: hidden;
+    }
+    .video-background-holder video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: 0;
+      -ms-transform: translateX(-50%) translateY(-50%);
+      -moz-transform: translateX(-50%) translateY(-50%);
+      -webkit-transform: translateX(-50%) translateY(-50%);
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .video-background-content {
+      position: relative;
+      z-index: 2;
+    }
+    .video-background-content h1, h3 {
+      color: #fff;
+    }
+    .video-background-content p {
+      font-size: small;
+    }
+    .video-background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: black;
+      opacity: 0.5;
+      z-index: 1;
+    }  
+
+    /* scrolly_chart */
+    #scrolly_aside {
+      position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      padding: 1rem;
+      background-color: #f3f3f3;
+    }
+    #scrolly_aside > * {
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+    }
+    .scrolly_content {
+      position: relative;
+      padding: 0 1rem;
+      width: 100%;
+    }
+    .scrolly_chart {
+      position: -webkit-sticky;
+      position: sticky;
+      width: 100%;
+      margin: 0;
+      -webkit-transform: translate3d(0, 0, 0);
+      -moz-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      z-index: 0;
+    }
+    .scrolly_chart iframe {
+      width: 100%;
+      height: 100%;
+    }
+
+    .step-1 {
+      margin: 0 auto 2rem auto;
+      display: flex;
+      justify-content: center;
+      align-items: start;      
+    }
+
+    .step-1:last-child {
+      margin-bottom: 0;
+    }
+
+    .text-block.is-active {
+      background-color: #fff;
+      color: #333333;
+    }
+
+    .text-block {
+      background-color: #f3f3f3;
+    }
+    .step-1 h2 {
+      text-align: left;
+      padding: 1rem;
+    }
+
+    .step-1 p {
+      text-align: left;
+      padding: 1rem;
+    }
+
+    iframe {
+      border: unset;
+    }
+
+/* mapbox style */
+    #map {
+      top:0;
+      height: 100vh;
+      width:100vw;
+      position: sticky;
+      z-index: -5;
+    }
+    /* #mapInset {
+      bottom:50px;
+      right:30px;
+      height: 180px;
+      width:250px;
+      max-width:100%;
+      position: fixed;
+      z-index: 1;
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+      pointer-events: none;
+    }
+    #mapInset .mapboxgl-ctrl-bottom-left{
+      display: none;
+    }
+    @media (max-width: 500px) {
+      #mapInset {
+        display: none;
+      }
+    } */
+    #features {
+      padding-bottom: 10vh;
+      padding-top: 10vh;
+    }
+    .hidden {
+      visibility: hidden;
+    }
+    .centered {
+      width: 50vw;
+      margin: 0 auto;
+    }
+    .lefty {
+      width: 33vw;
+      margin-left: 5vw;
+    }
+    .righty {
+      width: 33vw;
+      margin-left: 62vw;
+    }
+    .fully {
+      width: 100%;
+      margin: auto;
+    }
+    .light {
+      color: #444;
+      background-color: #fafafa;
+    }
+    .dark {
+      color: #fafafa;
+      background-color: #444;
+    }
+    #features .step {
+      padding-bottom: 50vh;
+      margin-bottom: 10vh;
+      opacity: 0.9;
+    }
+    #features .step h3 {
+        color: black;
+    }
+    #features .step.active {
+        opacity: 1;
+    }
+    #features  .step div {
+      padding:  25px 50px;
+      line-height: 25px;
+      font-size: 13px;
+    }
+    #features  .step img {
+      width: 100%;
+    }
+    @media (max-width: 750px) {
+      .centered, .lefty, .righty, .fully {
+          width: 90vw;
+          margin: 0 auto;
+      }
+    }
+    /* Fix issue on mobile browser where scroll breaks  */
+    .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan,
+    .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan .mapboxgl-canvas {
+      touch-action: unset;
+    }
+
+    </style> 
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<hcr-header></hcr-header>
+<!-- End Navigation -->
+
+<!-- Main -->
+<main id="products">
+  <div class="content_wrap">
+    <!-- Background video -->
+    <section id="landing">
+      <div class="video-background-holder">
+        <div class="video-background-overlay"></div>
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+          <source src="assets/img/Intro.mp4" type="video/mp4">
+        </video>
+        <div class="video-background-content container h-100">
+          <div class="row d-flex h-100 text-center align-items-center justify-content-center">
+            <div class="col-lg-10 text-white">
+              <h1 class="display-2 mb-10">COVID-19 deepens threats for displaced women and children</h1>
+              <h3 class="mb-10">This is subtitle or leading text</h4>
+              <p class="lead">UNHCR, The UN Refugee Agency</p>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End -->
+    <section id="scrolly_map_1" class="scrolly_overlay">
+      <div id="map"></div>
+      <div id="mapInset"></div>
+      <div id="story"></div>
+    </section>
+    <section id="scrolly_chart">
+      <div class="container-fluid" id="root">
+        <div class="row justify-content-center" id="scrolly_aside">
+          <div class="col-3 scrolly_content">
+          <div class="step-1" data-step="1">
+            <div class="text-block pa-2">
+            <h2>lorem 1</h2>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium debitis modi labore unde commodi, dolorem ut enim, necessitatibus odit facere et pariatur minus! Aliquam rem earum tempore accusamus corporis similique.</p>
+            </div>
+          </div>
+          <div class="step-1" data-step="2">
+            <div class="text-block pa-2">
+            <h2>lorem 2</h2>
+            <p class="text-body-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium debitis modi labore unde commodi, dolorem ut enim, necessitatibus odit facere et pariatur minus! Aliquam rem earum tempore accusamus corporis similique.</p>
+            </div>            
+          </div>
+          <div class="step-1" data-step="3">
+            <div class="text-block pa-2">
+            <h2>lorem 3</h2>
+            <p class="text-body-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium debitis modi labore unde commodi, dolorem ut enim, necessitatibus odit facere et pariatur minus! Aliquam rem earum tempore accusamus corporis similique.</p>
+            </div>            
+          </div>
+          <div class="step-1" data-step="4">
+            <div class="text-block pa-2">
+            <h2>lorem 4</h2>
+            <p class="text-body-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium debitis modi labore unde commodi, dolorem ut enim, necessitatibus odit facere et pariatur minus! Aliquam rem earum tempore accusamus corporis similique.</p>
+            </div>            
+          </div>
+          </div>
+          <div class="col-8 scrolly_chart">
+            <iframe scrolling="no" src='https://flo.uri.sh/story/1768191/embed#slide-0'></iframe>
+          </div>
+        </div>        
+        </div>
+    </section>
+  </div>
+</main>
+<!-- End Main -->
+
+
+
+<!-- side by side -->
+<script>
+  var scrolly = d3.select("#scrolly_aside");
+  var chart = scrolly.select(".scrolly_chart");
+  var content = scrolly.select(".scrolly_content");
+  var step = content.selectAll(".step-1");
+
+  // initialize the scrollama
+  var scroller = scrollama();
+
+  // generic window resize listener event
+  function handleResize() {
+    // 1. update height of step elements
+    var stepH = Math.floor(window.innerHeight * 1);
+    step.style("height", stepH + "px");
+
+    var figureHeight = window.innerHeight * 0.75;
+    var figureMarginTop = (window.innerHeight - figureHeight) / 2;
+
+    chart
+      .style("height", figureHeight + "px")
+      .style("top", figureMarginTop + "px");
+
+    // 3. tell scrollama to update new element dimensions
+    scroller.resize();
+  }
+
+  // scrollama event handlers
+  function handleStepEnter(response) {
+    const textblock = step.select(".text-block");
+
+    // add color to current step only
+    textblock.classed("is-active", function(d, i) {
+      return i === response.index;
+    });
+
+    // update graphic based on step
+    const linkHead = 'https://flo.uri.sh/story/1768191/embed#slide-'
+    const slide = response.index
+
+    d3.select('.scrolly_chart iframe')
+      .attr('src', linkHead + slide);
+  }
+
+  function setupStickyfill() {
+    d3.selectAll(".sticky").each(function() {
+      Stickyfill.add(this);
+    });
+  }
+
+  function init() {
+    setupStickyfill();
+    handleResize();
+    scroller
+      .setup({
+        step: "#scrolly_aside .scrolly_content .step-1",
+        offset: 0.7,
+        debug: false
+      })
+      .onStepEnter(handleStepEnter);
+
+    // setup resize event
+    window.addEventListener("resize", handleResize);
+  }
+
+  init();
+</script>  
+
+
+
+  <script src="assets/js/vendor/config.js"></script>
+  <script src="assets/js/vendor/drive.js"></script>
+  <script>
+    var initLoad = false;
+    var layerTypes = {
+        'fill': ['fill-opacity'],
+        'line': ['line-opacity'],
+        'circle': ['circle-opacity', 'circle-stroke-opacity'],
+        'symbol': ['icon-opacity', 'text-opacity'],
+        'raster': ['raster-opacity'],
+        'fill-extrusion': ['fill-extrusion-opacity'],
+        'heatmap': ['heatmap-opacity']
+    }
+    
+    var alignments = {
+        'left': 'lefty',
+        'center': 'centered',
+        'right': 'righty',
+        'full': 'fully'
+    }
+    
+    function getLayerPaintType(layer) {
+        var layerType = map.getLayer(layer).type;
+        return layerTypes[layerType];
+    }
+    
+    function setLayerOpacity(layer) {
+        var paintProps = getLayerPaintType(layer.layer);
+        paintProps.forEach(function(prop) {
+            var options = {};
+            if (layer.duration) {
+                var transitionProp = prop + "-transition";
+                options = { "duration": layer.duration };
+                map.setPaintProperty(layer.layer, transitionProp, options);
+            }
+            map.setPaintProperty(layer.layer, prop, layer.opacity, options);
+        });
+    }
+    
+    var story = document.getElementById('story');
+    var features = document.createElement('div');
+    features.setAttribute('id', 'features');
+    
+    
+    config.chapters[0].forEach((record, idx) => {
+        const container = document.createElement('div');
+        const chapter = document.createElement('div');
+    
+        if (record.title) {
+            const title = document.createElement('h3');
+            title.innerText = record.title;
+            chapter.appendChild(title);
+        }
+    
+        if (record.image) {
+            const image = new Image();
+            image.src = record.image;
+            chapter.appendChild(image);
+        }
+    
+        if (record.description) {
+            const story = document.createElement('p');
+            story.innerHTML = record.description;
+            chapter.appendChild(story);
+        }
+    
+        container.setAttribute('id', record.id);
+        container.classList.add('step');
+        if (idx === 0) {
+            container.classList.add('active');
+        }
+    
+        chapter.classList.add(config.theme);
+        container.appendChild(chapter);
+        container.classList.add(alignments[record.alignment] || 'centered');
+        if (record.hidden) {
+            container.classList.add('hidden');
+        }
+        features.appendChild(container);
+    });
+    
+    story.appendChild(features);
+
+    
+    mapboxgl.accessToken = config.accessToken;
+    
+    const transformRequest = (url) => {
+        const hasQuery = url.indexOf("?") !== -1;
+        const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
+        return {
+          url: url + suffix
+        }
+    }
+    
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: config.style[0],
+        center: config.chapters[0][0].location.center,
+        zoom: config.chapters[0][0].location.zoom,
+        bearing: config.chapters[0][0].location.bearing,
+        pitch: config.chapters[0][0].location.pitch,
+        interactive: false,
+        scrollZoom: false,
+        transformRequest: transformRequest,
+        projection: config.projection
+    });
+
+
+    var marker = new mapboxgl.Marker();
+    if (config.showMarkers) {
+        marker.setLngLat(config.chapters[0][0].location.center).addTo(map);
+    }
+
+    
+
+    // instantiate the scrollama
+    var scoller = scrollama();
+
+
+    function handleStepProgress(response) {
+    let stepProgress;
+
+    if (response.element.id.slice(0,5) === 'drive') {
+        let driveSlideNum = parseInt(response.element.id.slice(-1));
+        if (driveSlideNum === 0) {
+            map.setLayoutProperty('animatedLine', 'visibility', 'visible');
+            stepProgress = Math.round(response.progress*driveSmoothness*1.46);
+        } else if (driveSlideNum === 1) {
+            stepProgress = Math.round(response.progress*driveSmoothness+driveSmoothness*driveSlideNum);
+        }
+        changeCenter(stepProgress);
+    }
+    }
+    
+    
+   map.on("load", function() {
+
+    // let w = window.innerWidth;
+    // let initBounds = routeData.features[0].geometry.coordinates;
+
+    // if (followPoint === false) {
+    //     var bounds = initBounds.reduce(function(bounds, coord) {
+    //         return bounds.extend(coord);
+    //     }, new mapboxgl.LngLatBounds(initBounds[0], initBounds[0]));
+         
+    //     if (w >= 500) {
+    //         map.fitBounds(bounds, {
+    //             padding: {top: 150, bottom: 150, right: -100, left: 200},
+    //             duration: 0
+    //         });
+    //     } else {
+    //         map.fitBounds(bounds, {
+    //             padding: 20,
+    //             duration: 0
+    //         });
+    //     }
+    // } else {
+    //     map.setZoom(followZoomLevel);
+    //     map.setBearing(followBearing);
+    //     map.setPitch(followPitch);
+    // }
+
+    map.addSource('lineSource', {
+        "type": "geojson",
+        "data": geojsonPoint
+    });
+
+    map.addSource('pointSource', {
+        "type": "geojson",
+        "data": geojsonPoint
+    });
+
+    map.addLayer({
+      "id": "animatedLine",
+      "type": "line",
+      "source": "lineSource",
+      'paint': {
+            'line-opacity': 1,
+            'line-color': '#EF4A60',
+            'line-width': 3.5
+       },
+       'layout': {
+           'visibility': 'none'
+       }
+    });
+
+    map.addLayer({
+      "id": "animatedPoint",
+      "type": "circle",
+      "source": "pointSource",
+      'paint': {
+            'circle-radius': 4,
+            'circle-opacity': 1,
+            'circle-color': '#EF4A60'
+      },
+      'layout': {
+          //  'visibility': 'none'
+       }
+    });
+
+        if (config.use3dTerrain) {
+            map.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                'tileSize': 512,
+                'maxzoom': 14
+            });
+            // add the DEM source as a terrain layer with exaggerated height
+            map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+    
+            // add a sky layer that will show when the map is highly pitched
+            map.addLayer({
+                'id': 'sky',
+                'type': 'sky',
+                'paint': {
+                    'sky-type': 'atmosphere',
+                    'sky-atmosphere-sun': [0.0, 0.0],
+                    'sky-atmosphere-sun-intensity': 15
+                }
+            });
+        };
+        // setup the instance, pass callback functions
+        scoller
+        .setup({
+            step: '.step',
+            offset: 0.9,
+            progress: true
+        })
+        .onStepEnter(async response => {
+            const current_chapter = config.chapters[0].findIndex(chap => chap.id === response.element.id);
+            const chapter = config.chapters[0][current_chapter];
+            
+            response.element.classList.add('active');
+            map[chapter.mapAnimation || 'flyTo'](chapter.location);
+    
+            if (config.showMarkers) {
+                marker.setLngLat(chapter.location.center);
+            }
+            if (chapter.onChapterEnter.length > 0) {
+                chapter.onChapterEnter.forEach(setLayerOpacity);
+            }
+            if (chapter.callback) {
+                window[chapter.callback]();
+            }
+            if (chapter.rotateAnimation) {
+                map.once('moveend', () => {
+                    const rotateNumber = map.getBearing();
+                    map.rotateTo(rotateNumber + 180, {
+                        duration: 30000, easing: function (t) {
+                            return t;
+                        }
+                    });
+                });
+            }
+            if (config.auto) {
+                 const next_chapter = (current_chapter + 1) % config.chapters[0].length;
+                 map.once('moveend', () => {
+                     document.querySelectorAll('[data-scrollama-index="' + next_chapter.toString() + '"]')[0].scrollIntoView();
+                 });
+            }
+        })
+        .onStepExit(response => {
+            const chapter = config.chapters[0].find(chap => chap.id === response.element.id);
+            response.element.classList.remove('active');
+            if (chapter.onChapterExit.length > 0) {
+                chapter.onChapterExit.forEach(setLayerOpacity);
+            }
+        }).onStepProgress(handleStepProgress);
+
+        createLine();
+    
+        if (config.auto) {
+            document.querySelectorAll('[data-scrollama-index="0"]')[0].scrollIntoView();
+        }
+    })
+
+    
+    // setup resize event
+    window.addEventListener('resize', scoller.resize);
+
+
+    $(document).ready(function (){
+    $.ajax({
+      url:"/scrollytelling-test/data/refugeeroutes.geojson",
+      dataType: "json",
+      success: function (data) {
+        console.log('data', data.features[0]);
+        routeData = data;
+      },
+      error: function () {
+        console.log('error loading data');
+      }
+    });
+});
+    
+  </script>
+
+
+
+
+    <!-- Footer -->
+    <hcr-footer></hcr-footer>
+    <!-- End footer -->
+
+    <!-- Scripts -->
+    <!-- bs/popper bundle -->
+    <script src="assets/js/vendor/bootstrap.bundle.min.js"></script>
+    <!-- UNHCR includes header/footer JS file -->
+    <script type="module" src="assets/js/unhcrincludes.js"></script>
+    <!-- UNHCR main JS file -->
+    <script type="module" src="assets/js/unhcrmain.js"></script>
+    <!-- End scripts -->
+
+</body>
+
+</html>
