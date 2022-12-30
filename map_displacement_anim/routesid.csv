@@ -1,0 +1,7 @@
+﻿route,orgdest,name,lat,lon,order
+VEN-COL,origin,Caracas,10.502944,-66.918983,1
+VEN-COL,dest,Bogota,4.598369,-74.08529,1
+COL-PAN,origin,Bogota,4.598369,-74.08529,2
+COL-PAN,dest,Panama City,8.969963,-79.534983,2
+PAN-GUA,origin,Panama City,8.969963,-79.534983,3
+PAN-GUA,dest,Guatemala,14.623081,-90.528911,3
