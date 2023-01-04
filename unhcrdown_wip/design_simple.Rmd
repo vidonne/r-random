@@ -10,7 +10,7 @@ author:
     email: email@unhcr.org
 output:
   pagedown::html_paged:
-    css: ["css/reset.css", "css/color_variables.css", "css/fonts.css", "css/all.css", "css/paged_base.css","css/paged_simple.css"]
+    css: ["css/reset.css", "css/color_variables.css", "css/fonts.css", "css/paged_base.css","css/paged_simple.css"]
     includes:
       in_header: html/fontawesome.html
       after_body: html/back_paged_simple.html
