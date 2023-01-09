@@ -76,3 +76,16 @@ ggplot() +
   geom_sf(data = point_sf) +
   coord_sf(crs = st_crs(proj_laea)) +
   theme_void()
+
+library(tmap)
+
+tm_shape(poly_sf,
+  # projection = "+proj=laea +lon_0=-77.34 +lat_0=7.37 +datum=WGS84 +units=m +no_defs",
+  bbox = c(-85, -40, -50, 10)
+) +
+  tm_fill() +
+  tm_borders() +
+  tm_shape(routes_sf) +
+  tm_lines() +
+  tm_shape(point_sf) +
+  tm_dots()
